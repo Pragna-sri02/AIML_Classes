@@ -32,66 +32,134 @@ st.set_page_config(
 st.markdown("""
 <style>
 
+/* =========================================================
+   COLORFUL THEME
+   ========================================================= */
+
+@keyframes gradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
 .stApp {
-    background: linear-gradient(180deg, #f4f9ff 0%, #eef6ff 45%, #e8f2ff 100%);
+    background: linear-gradient(120deg, #fdf2ff 0%, #f0f7ff 25%, #fff8ec 50%, #f0fff7 75%, #fdf2ff 100%);
+    background-size: 300% 300%;
+    animation: gradientShift 22s ease infinite;
 }
 
 [data-testid="stSidebar"] {
-    background-color: #ffffff;
-    border-right: 1px solid #e5e7eb;
+    background: linear-gradient(180deg, #f3e8ff 0%, #fde2ec 100%);
+    border-right: 1px solid #eadcfb;
+}
+
+[data-testid="stSidebar"] * {
+    color: #6d28d9 !important;
 }
 
 .block-container {
-    padding-top: 2rem;
+    padding-top: 1rem;
+}
+
+[data-testid="stHeader"] {
+    background: transparent;
+}
+
+/* Tabs — soft pastel palette, no box outline, color only */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 10px;
+}
+
+.stTabs [data-baseweb="tab"] {
+    background: transparent;
+    border-radius: 14px;
+    padding: 10px 20px;
+    font-weight: 700;
+    border: none;
+    box-shadow: none;
+}
+
+.stTabs [aria-selected="true"] {
+    background: transparent !important;
+    color: #6d28d9 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.stTabs [aria-selected="true"] p {
+    color: #6d28d9 !important;
+    font-weight: 800 !important;
+}
+
+[data-baseweb="tab-highlight"] {
+    background-color: #d8b4fe !important;
+}
+
+[data-baseweb="tab-border"] {
+    background-color: #eee3fb !important;
 }
 
 .main-title {
     text-align: center;
-    font-size: 42px;
-    font-weight: 800;
+    font-size: 46px;
+    font-weight: 900;
     margin-bottom: 5px;
+    background: linear-gradient(90deg, #7c3aed, #db2777, #f59e0b, #10b981);
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 8s linear infinite;
 }
 
 .subtitle {
     text-align: center;
-    color: #6b7280;
+    color: #7c3aed;
+    font-weight: 600;
     font-size: 18px;
     margin-bottom: 30px;
 }
 
 .section-title {
     font-size: 25px;
-    font-weight: 700;
+    font-weight: 800;
     margin-top: 20px;
     margin-bottom: 15px;
+    color: #6d28d9;
+    border-left: 6px solid #f472b6;
+    padding-left: 12px;
 }
 
 .price-box {
-    padding: 30px;
-    border-radius: 20px;
+    padding: 35px;
+    border-radius: 24px;
     text-align: center;
-    background-color: #eef6ff;
-    border: 1px solid #d8eaff;
+    background: linear-gradient(135deg, #f3e8ff 0%, #fde2ec 50%, #fff3d6 100%);
+    border: 2px solid #eadcfb;
+    box-shadow: 0 10px 26px rgba(124, 58, 237, 0.14);
 }
 
 .price {
-    font-size: 42px;
-    font-weight: 800;
+    font-size: 46px;
+    font-weight: 900;
+    color: #6d28d9;
 }
 
 .price-sub {
-    color: #64748b;
+    color: #9d5fc2;
     font-size: 15px;
+    font-weight: 600;
 }
 
 .value-card {
-    background: white;
+    background: linear-gradient(160deg, #ffffff, #fdf2ff);
     border-radius: 18px;
     padding: 25px 15px;
     text-align: center;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 8px 22px rgba(124, 58, 237, 0.15);
     min-height: 170px;
-    border: 1px solid #eeeeee;
+    border: 2px solid #f3e8ff;
+    transition: transform 0.15s ease;
 }
 
 .value-medal {
@@ -101,59 +169,60 @@ st.markdown("""
 
 .value-city {
     font-size: 21px;
-    font-weight: 700;
-    color: #172554;
+    font-weight: 800;
+    color: #6d28d9;
     margin-bottom: 8px;
 }
 
 .value-price {
     font-size: 16px;
-    color: #64748b;
+    color: #db2777;
+    font-weight: 700;
 }
 
 .budget-card {
-    background: white;
+    background: linear-gradient(160deg, #ffffff, #fff7ed);
     padding: 25px;
     border-radius: 18px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    border: 2px solid #fde68a;
+    box-shadow: 0 6px 18px rgba(245, 158, 11, 0.18);
     min-height: 145px;
 }
 
 .budget-card-title {
-    color: #64748b;
+    color: #b45309;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
 .budget-card-value {
-    color: #172554;
+    color: #7c3aed;
     font-size: 30px;
-    font-weight: 800;
+    font-weight: 900;
     margin-top: 12px;
 }
 
 .budget-card-subtitle {
-    color: #94a3b8;
+    color: #a16207;
     font-size: 13px;
     margin-top: 5px;
 }
 
 .howto-card {
-    background: white;
+    background: linear-gradient(135deg, #ffffff, #ecfeff);
     border-radius: 18px;
     padding: 22px 26px;
-    border: 1px solid #d8eaff;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    border: 2px solid #a5f3fc;
+    box-shadow: 0 6px 18px rgba(6, 182, 212, 0.15);
     margin-bottom: 25px;
 }
 
 .howto-title {
     font-size: 18px;
-    font-weight: 700;
-    color: #172554;
+    font-weight: 800;
+    color: #0e7490;
     margin-bottom: 12px;
 }
 
@@ -165,9 +234,9 @@ st.markdown("""
 }
 
 .howto-num {
-    background-color: #2563eb;
+    background: linear-gradient(135deg, #7c3aed, #db2777);
     color: white;
-    font-weight: 700;
+    font-weight: 800;
     font-size: 13px;
     min-width: 24px;
     height: 24px;
@@ -175,12 +244,45 @@ st.markdown("""
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 2px 6px rgba(219, 39, 119, 0.4);
 }
 
 .howto-text {
     color: #374151;
     font-size: 14.5px;
     padding-top: 2px;
+}
+
+/* Button — matches the pastel palette */
+.stButton > button {
+    background: linear-gradient(90deg, #a78bfa, #f472b6, #fbbf24);
+    background-size: 200% auto;
+    color: white;
+    font-weight: 800;
+    border: none;
+    border-radius: 14px;
+    padding: 12px 0;
+    box-shadow: 0 6px 16px rgba(167, 139, 250, 0.30);
+    transition: background-position 0.4s ease, transform 0.15s ease;
+}
+
+.stButton > button:hover {
+    background-position: right center;
+    transform: translateY(-2px);
+    color: white;
+}
+
+/* Metrics */
+[data-testid="stMetric"] {
+    background: linear-gradient(160deg, #ffffff, #f3e8ff);
+    border-radius: 14px;
+    padding: 12px 10px;
+    border: 2px solid #e9d5ff;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.12);
+}
+
+[data-testid="stMetricValue"] {
+    color: #7c3aed;
 }
 
 </style>
