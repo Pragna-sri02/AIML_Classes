@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import joblib
 import textwrap
@@ -42,10 +43,96 @@ st.markdown("""
     100% { background-position: 0% 50%; }
 }
 
+html, body {
+    color-scheme: light only;
+}
+
+/* Force Streamlit's native headings (st.title, st.header, st.subheader)
+   to stay dark/visible, regardless of the viewer's light/dark preference */
+.stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp h5, .stApp h6,
+[data-testid="stHeading"] h1, [data-testid="stHeading"] h2, [data-testid="stHeading"] h3,
+[data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 {
+    color: #1f2937 !important;
+    -webkit-text-fill-color: #1f2937 !important;
+}
+
+[data-testid="stCaptionContainer"] p {
+    color: #4b5563 !important;
+}
+
 .stApp {
     background: linear-gradient(120deg, #fdf2ff 0%, #f0f7ff 25%, #fff8ec 50%, #f0fff7 75%, #fdf2ff 100%);
     background-size: 300% 300%;
     animation: gradientShift 22s ease infinite;
+    color-scheme: light only;
+}
+
+/* Force every widget/label/text element to keep light-theme colors,
+   even when the visitor's browser has auto dark-mode turned on */
+.stApp, .stApp * {
+    color-scheme: light only;
+}
+
+[data-testid="stWidgetLabel"] p,
+[data-testid="stWidgetLabel"] label,
+[data-testid="stMarkdownContainer"] p {
+    color: #1f2937 !important;
+}
+
+input, select, textarea,
+[data-baseweb="input"], [data-baseweb="select"],
+[data-baseweb="base-input"] {
+    background-color: #ffffff !important;
+    color: #1f2937 !important;
+}
+
+[data-baseweb="select"] * ,
+[data-baseweb="input"] * {
+    color: #1f2937 !important;
+}
+
+/* Unified, complete border around each field — text, select, and number inputs
+   all get ONE clean rounded box instead of fragmented per-element borders */
+[data-baseweb="select"] > div,
+[data-baseweb="input"],
+[data-baseweb="base-input"],
+[data-testid="stNumberInputContainer"] {
+    border: 2px solid #d1d5db !important;
+    border-radius: 12px !important;
+    background-color: #ffffff !important;
+    overflow: hidden;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Remove inner borders on the pieces so only the outer box shows a line */
+[data-testid="stNumberInputContainer"] input,
+[data-testid="stNumberInputContainer"] button,
+.stNumberInput button,
+[data-baseweb="input"] input {
+    border: none !important;
+    background-color: transparent !important;
+}
+
+.stNumberInput button svg {
+    color: #7c3aed !important;
+}
+
+/* Subtle glow on hover / focus for a more polished feel */
+[data-baseweb="select"] > div:hover,
+[data-baseweb="input"]:hover,
+[data-testid="stNumberInputContainer"]:hover {
+    border-color: #b794f6 !important;
+}
+
+[data-baseweb="select"] > div:focus-within,
+[data-baseweb="input"]:focus-within,
+[data-testid="stNumberInputContainer"]:focus-within {
+    border-color: #7c3aed !important;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15) !important;
+}
+
+.stNumberInput > div > div {
+    border: none !important;
 }
 
 [data-testid="stSidebar"] {
@@ -65,38 +152,59 @@ st.markdown("""
     background: transparent;
 }
 
-/* Tabs — soft pastel palette, no box outline, color only */
+/* Tabs — classic underline style (flat text, colored bar under active tab) */
 .stTabs [data-baseweb="tab-list"] {
-    gap: 10px;
+    gap: 24px;
+    border-bottom: 2px solid #e5e7eb !important;
+    position: relative;
+    z-index: 5;
 }
 
 .stTabs [data-baseweb="tab"] {
-    background: transparent;
-    border-radius: 14px;
-    padding: 10px 20px;
-    font-weight: 700;
+    background-color: transparent;
+    border-radius: 0;
+    padding: 10px 4px;
+    font-weight: 600;
     border: none;
     box-shadow: none;
+    cursor: pointer;
+    position: relative;
+    z-index: 5;
+}
+
+.stTabs [data-baseweb="tab"] * {
+    pointer-events: none;
+    cursor: pointer;
+}
+
+.stTabs [data-baseweb="tab"] p {
+    color: #6b7280 !important;
+    font-weight: 600 !important;
 }
 
 .stTabs [aria-selected="true"] {
-    background: transparent !important;
-    color: #6d28d9 !important;
+    background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
 }
 
 .stTabs [aria-selected="true"] p {
-    color: #6d28d9 !important;
+    color: #7c3aed !important;
     font-weight: 800 !important;
 }
 
+/* Solid, high-contrast underline bar under the active tab */
 [data-baseweb="tab-highlight"] {
-    background-color: #d8b4fe !important;
+    background: linear-gradient(90deg, #7c3aed, #db2777) !important;
+    height: 3px !important;
+    border-radius: 3px !important;
+    pointer-events: none !important;
 }
 
 [data-baseweb="tab-border"] {
-    background-color: #eee3fb !important;
+    background-color: #e5e7eb !important;
+    height: 2px !important;
+    pointer-events: none !important;
 }
 
 .main-title {
@@ -296,6 +404,77 @@ st.markdown("""
 tab1, tab2, tab3 = st.tabs(
     ["🏠 Price Prediction", "📊 Dashboard", "🤖 Model Performance"]
 )
+
+# =========================================================
+# SWIPE GESTURE NAVIGATION FOR TABS
+# Swipe left  -> next tab
+# Swipe right -> previous tab
+# =========================================================
+components.html("""
+<script>
+(function() {
+    const doc = window.parent.document;
+    if (doc.__swipeTabsAttached) return;
+    doc.__swipeTabsAttached = true;
+
+    function getTabs() {
+        return Array.from(doc.querySelectorAll('[data-baseweb="tab-list"] button[role="tab"]'));
+    }
+
+    function switchTab(direction) {
+        const tabs = getTabs();
+        if (tabs.length === 0) return;
+        const activeIndex = tabs.findIndex(t => t.getAttribute('aria-selected') === 'true');
+        if (activeIndex === -1) return;
+        let newIndex = activeIndex + direction;
+        newIndex = Math.max(0, Math.min(tabs.length - 1, newIndex));
+        if (newIndex !== activeIndex) tabs[newIndex].click();
+    }
+
+    // ---- Touch swipe (mobile / tablet) ----
+    let startX = 0, startY = 0;
+    doc.addEventListener('touchstart', function(e) {
+        startX = e.changedTouches[0].screenX;
+        startY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    doc.addEventListener('touchend', function(e) {
+        const endX = e.changedTouches[0].screenX;
+        const endY = e.changedTouches[0].screenY;
+        const dx = endX - startX;
+        const dy = endY - startY;
+
+        if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+        const target = e.target;
+        if (target.closest('input, select, textarea, [data-baseweb="slider"], [data-baseweb="select"]')) return;
+
+        switchTab(dx < 0 ? 1 : -1);
+    }, { passive: true });
+
+    // ---- Trackpad / mouse-wheel horizontal swipe (desktop) ----
+    let wheelCooldown = false;
+    doc.addEventListener('wheel', function(e) {
+        if (wheelCooldown) return;
+        if (Math.abs(e.deltaX) > 40 && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+            const target = e.target;
+            if (target.closest('input, select, textarea, [data-baseweb="slider"], [data-baseweb="select"]')) return;
+            switchTab(e.deltaX > 0 ? 1 : -1);
+            wheelCooldown = true;
+            setTimeout(() => { wheelCooldown = false; }, 600);
+        }
+    }, { passive: true });
+    // ---- Keyboard arrow keys (desktop) ----
+    doc.addEventListener('keydown', function(e) {
+        if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+
+        const active = doc.activeElement;
+        if (active && active.closest('input, select, textarea, [data-baseweb="slider"], [data-baseweb="select"], [contenteditable="true"]')) return;
+
+        switchTab(e.key === 'ArrowRight' ? 1 : -1);
+    });
+})();
+</script>
+""", height=0)
 
 
 # =========================================================
